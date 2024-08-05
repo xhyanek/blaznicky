@@ -10,7 +10,7 @@ const io = socketIo(server);
 
 const port = process.env.PORT || 3000;
 
-const POEM_LENGTH = 4;
+const POEM_LENGTH = 2;
 const DISPLAY_SINGLE = true;
 
 // Serve static files from the "public" directory
@@ -73,29 +73,26 @@ io.on('connection', (socket) => {
         if (!game) return;
 
         game.poems[game.currentPoemIndices[playerIndex]].push(line);
+        let previousPoemIndex = game.currentPoemIndices[playerIndex];
         game.currentPoemIndices[playerIndex] = (game.currentPoemIndices[playerIndex] + 1) % game.players.length;
 
-        for (const poem in game.poems) {
-            if (poem.length < game.poemLength) {
-                break;
-            }
-            // Game completed
-            if (displaySingle) {
+        if (game.poems.every(poem => poem.length == game.poemLength)) {
+            if (game.displaySingle) {
                 // random int between 1 and 11
                 let randomInt = 1 + Math.floor(Math.random() * 11);
                 for (let i = 0; i < game.players.length; i++) {
                     let socketId = game.playerSockets[i];
-                    io.to(socketId).emit('gameFinished', game.poems[(i + randomInt) % game.players.length]);
+                    io.to(socketId).emit('displaySingle', game.poems[(i + randomInt) % game.players.length]);
                 }
             } else {
-                io.to(gameId).emit('gameFinished', game.poems);
+                io.to(gameId).emit('displayAll', game.poems);
             }
             // delete game probably
             delete games[gameId];
             return;
         }
 
-        if (game.poems[playerIndex].length >= game.poemLength) {
+        if (game.poems[previousPoemIndex].length >= game.poemLength) {
             // Player submitted all lines
             socket.emit('all-lines-submitted')
         } else {
@@ -114,7 +111,7 @@ io.on('connection', (socket) => {
                 displayNextLine(game, playerIndex, socket.id)
             }
         }
-        console.log(game)
+        //console.log(game)
     });
 
     // Handle disconnect

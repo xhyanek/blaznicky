@@ -89,8 +89,13 @@ function toggleInput(disabled) {
 }
 
 // Display the final poems when the game is finished
-socket.on('gameFinished', (finalPoems) => {
+socket.on('displayAll', (finalPoems) => {
     const finalPoemsHTML = finalPoems.map(poem => poem.join('<br>')).join('<br><br>');
     document.getElementById('poem-container').innerHTML = finalPoemsHTML;
+    disableInput()
+});
+
+socket.on('displaySingle', (poem) => {
+    document.getElementById('poem-container').innerHTML = poem.join('<br>');
     disableInput()
 });
