@@ -11,7 +11,7 @@ const io = socketIo(server);
 const port = process.env.PORT || 3000;
 
 const POEM_LENGTH = 2;
-const DISPLAY_SINGLE = true;
+const DISPLAY_SINGLE = false;
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));
@@ -19,7 +19,7 @@ app.use(express.static('public'));
 let games = {}; // Store the game sessions
 
 // Create a new game
-app.get('/createGame', (req, res) => {
+/* app.get('/createGame', (req, res) => {
     //const gameId = uuidv4();
     const gameId = uuidv4().substring(0, 5);
     games[gameId] = {
@@ -32,11 +32,28 @@ app.get('/createGame', (req, res) => {
         running: false
     };
     res.json({ gameId });
-});
+}); */
 
 // Socket connection
 io.on('connection', (socket) => {
     console.log('New client connected');
+
+    socket.on('create-game', ({ numberOfRounds, playerName }) => {
+        const gameId = uuidv4().substring(0, 5);
+        games[gameId] = {
+            players: [],
+            playerSockets: [],
+            currentPoemIndices: [],
+            poems: [],
+            poemLength: numberOfRounds,
+            displaySingle: DISPLAY_SINGLE,
+            running: false
+        };
+
+        // big time duplication -- socket.on('joinGame')
+        console.log(gameId)
+        socket.emit('game-created', { newGameId: gameId })
+    })
 
     // Join a game room
     socket.on('joinGame', ({ gameId, playerName }) => {
@@ -64,11 +81,14 @@ io.on('connection', (socket) => {
         // }
 
         socket.to(gameId).emit('newPlayerJoined', {gameData: game})
-        socket.emit('joinedGame', { gameId, gameData: game }, newPlayerIndex);
+        socket.emit('joinedGame', { roomId: gameId, gameData: game }, newPlayerIndex);
     });
 
     // Handle a new line submission
     socket.on('submitLine', ({ gameId, line, playerIndex }) => {
+        console.log("tady")
+        console.log(games)
+        console.log(gameId)
         const game = games[gameId];
         if (!game) return;
 
@@ -111,7 +131,7 @@ io.on('connection', (socket) => {
                 displayNextLine(game, playerIndex, socket.id)
             }
         }
-        //console.log(game)
+        console.log(game)
     });
 
     // Handle disconnect

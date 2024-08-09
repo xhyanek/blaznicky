@@ -6,13 +6,25 @@ let playerIndex = null;
 
 // Create a new game and join it
 document.getElementById('create-game-button').addEventListener('click', () => {
-    fetch('/createGame')
+    let numberOfRounds = parseInt(prompt("number of rounds"), 10);
+    if (numberOfRounds == null) {
+        alert("The game id is wrong");
+        return;
+    }
+    socket.emit('create-game', { numberOfRounds, playerName })
+    /* fetch('/createGame')
         .then(response => response.json())
         .then(data => {
             gameId = data.gameId;
             joinGame();
-        });
+        }); */
 });
+
+socket.on('game-created', ({newGameId}) => {
+    console.log(newGameId)
+    gameId = newGameId
+    joinGame()
+})
 
 // Join an existing game
 document.getElementById('join-game-button').addEventListener('click', () => {
@@ -29,8 +41,11 @@ socket.on('wrong-game-id', () => {
 });
 
 // Handle joined game event
-socket.on('joinedGame', ({ gameId, gameData }, newPlayerIndex) => {
+socket.on('joinedGame', ({ roomId, gameData }, newPlayerIndex) => {
     console.log(`Joined game ${gameId}`);
+    console.log(roomId)
+    console.log(gameId)
+    gameId = roomId;
     // Initialize game data, UI, etc.
     document.getElementById('create-game-container').style.display = "none"
     document.getElementById('game-container').style.display = "block"
@@ -54,6 +69,7 @@ document.getElementById('submit-button').addEventListener('click', () => {
 
     socket.emit('submitLine', { gameId, line: inputLine, playerIndex });
     document.getElementById('input-line').value = '';
+    console.log(`submitted line to room ${gameId}`)
 });
 
 // Update UI when the last lines of poems are updated
