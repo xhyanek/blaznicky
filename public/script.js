@@ -47,11 +47,18 @@ socket.on('joinedGame', ({ roomId, gameData }, newPlayerIndex) => {
     console.log(gameId)
     gameId = roomId;
     // Initialize game data, UI, etc.
+    if (Math.random() < 0.02) {
+        document.getElementById('waiting-image').src = "images/toon.gif"
+        document.getElementById('waiting-image').style.maxWidth = '50%'
+    }
     document.getElementById('create-game-container').style.display = "none"
     document.getElementById('game-container').style.display = "block"
     document.getElementById('game-id-container').innerHTML = `Game ID: ${gameId}`
     refreshPlayerList(gameData)
     playerIndex = newPlayerIndex
+    if (gameData.admin === playerName) {
+        document.getElementById('start-game-button').style.display = "block"
+    }
 });
 
 socket.on('newPlayerJoined', ({ gameData }) => {
@@ -61,6 +68,16 @@ socket.on('newPlayerJoined', ({ gameData }) => {
 function refreshPlayerList(gameData) {
     document.getElementById('player-list-container').innerHTML = `Připojení šašci: ${gameData.players}`
 }
+
+document.getElementById('start-game-button').addEventListener('click', () => {
+    socket.emit('start-game', { gameId })
+});
+
+socket.on('game-started', () => {
+    document.getElementById('waiting-screen').style.display = "none"
+    document.getElementById('game-info-container').style.display = "none"
+    document.getElementById('input-container').style.display = "block"
+})
 
 // Handle line submission
 document.getElementById('submit-button').addEventListener('click', () => {

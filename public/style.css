@@ -39,3 +39,8 @@ button {
 button:hover {
     background: #0056b3;
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+  }

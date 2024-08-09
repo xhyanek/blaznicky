@@ -47,7 +47,8 @@ io.on('connection', (socket) => {
             poems: [],
             poemLength: numberOfRounds,
             displaySingle: DISPLAY_SINGLE,
-            running: false
+            running: false,
+            admin: playerName
         };
 
         // big time duplication -- socket.on('joinGame')
@@ -83,6 +84,10 @@ io.on('connection', (socket) => {
         socket.to(gameId).emit('newPlayerJoined', {gameData: game})
         socket.emit('joinedGame', { roomId: gameId, gameData: game }, newPlayerIndex);
     });
+
+    socket.on('start-game', ({ gameId }) => {
+        io.to(gameId).emit('game-started')
+    })
 
     // Handle a new line submission
     socket.on('submitLine', ({ gameId, line, playerIndex }) => {
@@ -124,11 +129,12 @@ io.on('connection', (socket) => {
             }
 
             // load the next line
-            if (game.currentPoemIndices[(playerIndex + 1) % game.players.length] == game.currentPoemIndices[playerIndex]) {
+            if (game.currentPoemIndices[(playerIndex + 1) % game.players.length] != game.currentPoemIndices[playerIndex]
+                    || game.players.length === 1) {
                 // wait for the next player to submit
-                socket.emit('waitForNextLine')
-            } else {
                 displayNextLine(game, playerIndex, socket.id)
+            } else {
+                socket.emit('waitForNextLine')
             }
         }
         console.log(game)

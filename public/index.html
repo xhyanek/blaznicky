@@ -13,11 +13,20 @@
         <button id="join-game-button">Join Game</button>
     </div>
     <div id="game-container" style="display: none">
-        <div id="game-id-container"></div>
-        <div id="player-list-container"></div>
+        <div id="game-info-container">
+            <div id="game-id-container"></div>
+            <div id="player-list-container"></div>
+        </div>
         <div id="poem-container"></div>
-        <textarea id="input-line" placeholder="Write your line here..."></textarea>
-        <button id="submit-button">Submit</button>
+        <div id="input-container" style="display: none;">
+            <textarea id="input-line" placeholder="Write your line here..."></textarea>
+            <button id="submit-button">Submit</button>
+        </div>
+        <div id="waiting-screen">
+            <label>Čeká se na <a href="https://youtu.be/RYdGB9nO2fE?si=oG2U-mKWEQLr_Wsl" target="_blank" style="text-decoration:none;color:#000000">člověka</a>, který tuhle sešnu vytvořil, aby zmáčkl čudlík<br><br></label>
+            <img id="waiting-image" src="images/twin-peaks-room.gif">
+            <button id="start-game-button" style="display: none">Start game</button>
+        </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
