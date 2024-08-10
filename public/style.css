@@ -77,3 +77,11 @@ img {
     max-width: 100%;
     height: auto;
 }
+
+.scrollable-div {
+    width: 100%;        /* Set the width of the div */
+    max-height: 50vh;       /* Set the height of the div */
+    padding: 10px;       /* Optional: Add padding */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    overflow: auto;      /* Add a scrollbar if needed */
+}
