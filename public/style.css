@@ -27,6 +27,13 @@ body.dark {
     --container-color: #222;
 }
 
+#create-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 #game-container {
     background: var(--container-color);
     padding: 20px;
@@ -39,6 +46,10 @@ body.dark {
     margin-bottom: 20px;
 }
 
+#final-poem-container {
+    text-align: center;
+}
+
 textarea {
     width: 100%;
     height: 50px;
@@ -48,12 +59,14 @@ textarea {
 }
 
 button {
+    margin: 2px 0;
     padding: 10px 20px;
     background: var(--accent-color);
     color: var(--button-text-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    min-width: 100%;
 }
 
 button:hover {

@@ -20,15 +20,19 @@
         </div>
         <div id="poem-container"></div>
         <div id="input-container" style="display: none;">
-            <label id="round-counter"></label>
             <textarea id="input-line" placeholder="Write your line here..."></textarea>
             <button id="submit-button">Submit</button>
+            <label id="round-counter"></label>
         </div>
         <div id="waiting-screen">
             <label>Čeká se na <a href="https://youtu.be/RYdGB9nO2fE?si=oG2U-mKWEQLr_Wsl" target="_blank" style="text-decoration:none;color:var(--text-color)">člověka</a>, který tuhle sešnu vytvořil, aby zmáčkl čudlík<br><br></label>
             <img id="waiting-image" src="images/twin-peaks-room.gif">
             <button id="start-game-button" style="display: none">Start game</button>
         </div>
+    </div>
+    <div id="end-game-container" style="display: none;">
+        <div id="final-poem-container"></div>
+        <button id="download-poems-button">Download poems</button>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>

@@ -6,7 +6,15 @@ let playerIndex = null;
 let roundCount = null;
 let linesSubmitted = 0;
 
+const honk = new Audio("/sounds/clown-horn-44595.mp3");
+const spring = new Audio("/sounds/funny-spring-jump-140378.mp3");
+honk.volume = 0.1
+spring.volume = 0.1
+
 document.getElementById('swap-themes-button').addEventListener('click', () => {
+    honk.currentTime = 1
+    honk.play()
+
     document.body.classList.toggle('dark')
 })
 
@@ -93,6 +101,11 @@ socket.on('game-started', () => {
 
 // Handle line submission
 document.getElementById('submit-button').addEventListener('click', () => {
+    // audio
+    spring.currentTime = 0
+    spring.play()
+
+    // submission logic
     const inputLine = document.getElementById('input-line').value.trim();
     if (inputLine === "") return;
 
@@ -137,11 +150,38 @@ function toggleInput(disabled) {
 // Display the final poems when the game is finished
 socket.on('displayAll', (finalPoems) => {
     const finalPoemsHTML = finalPoems.map(poem => poem.join('<br>')).join('<br>----------------------------------------<br>');
-    document.getElementById('poem-container').innerHTML = finalPoemsHTML;
+    document.getElementById('final-poem-container').innerHTML = finalPoemsHTML;
     disableInput()
+    displayEndScreen()
 });
 
 socket.on('displaySingle', (poem) => {
-    document.getElementById('poem-container').innerHTML = poem.join('<br>');
+    document.getElementById('final-poem-container').innerHTML = poem.join('<br>');
     disableInput()
+    displayEndScreen()
 });
+
+function displayEndScreen() {
+    document.getElementById('game-container').style.display = "none";
+    document.getElementById('end-game-container').style.display = "block";
+}
+
+document.getElementById('download-poems-button').addEventListener('click', () => {
+    download("poems.txt", document.getElementById('final-poem-container').innerHTML.replaceAll("<br>", "\n"))
+})
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+}
+
+// todo player disconnecting
+// todo poem display
