@@ -65,6 +65,10 @@ io.on('connection', (socket) => {
             socket.emit('wrong-game-id')
             return;
         }
+        if (game.running) {
+            socket.emit('already-running')
+            return;
+        }
         const newPlayerIndex = game.players.length
         game.players.push(playerName);
         game.playerSockets.push(socket.id);
@@ -86,6 +90,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('start-game', ({ gameId }) => {
+        games[gameId].running = true;
         io.to(gameId).emit('game-started')
     })
 

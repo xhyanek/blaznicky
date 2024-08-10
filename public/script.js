@@ -3,12 +3,14 @@ const socket = io();
 let gameId = null;
 let playerName = prompt("Enter your name:");
 let playerIndex = null;
+let roundCount = null;
+let linesSubmitted = 0;
 
 // Create a new game and join it
 document.getElementById('create-game-button').addEventListener('click', () => {
     let numberOfRounds = parseInt(prompt("number of rounds"), 10);
-    if (numberOfRounds == null) {
-        alert("The game id is wrong");
+    if (isNaN(numberOfRounds)) {
+        alert("Number of rounds must be a number");
         return;
     }
     socket.emit('create-game', { numberOfRounds, playerName })
@@ -40,6 +42,10 @@ socket.on('wrong-game-id', () => {
     alert("The game id is wrong");
 });
 
+socket.on('already-running', () => {
+    alert("The game is already running :(");
+});
+
 // Handle joined game event
 socket.on('joinedGame', ({ roomId, gameData }, newPlayerIndex) => {
     console.log(`Joined game ${gameId}`);
@@ -51,6 +57,8 @@ socket.on('joinedGame', ({ roomId, gameData }, newPlayerIndex) => {
         document.getElementById('waiting-image').src = "images/toon.gif"
         document.getElementById('waiting-image').style.maxWidth = '50%'
     }
+    roundCount = gameData.poemLength
+    document.getElementById('round-counter').innerHTML = `0/${roundCount}`;
     document.getElementById('create-game-container').style.display = "none"
     document.getElementById('game-container').style.display = "block"
     document.getElementById('game-id-container').innerHTML = `Game ID: ${gameId}`
@@ -86,7 +94,8 @@ document.getElementById('submit-button').addEventListener('click', () => {
 
     socket.emit('submitLine', { gameId, line: inputLine, playerIndex });
     document.getElementById('input-line').value = '';
-    console.log(`submitted line to room ${gameId}`)
+    linesSubmitted++;
+    document.getElementById('round-counter').innerHTML = `${linesSubmitted}/${roundCount}`;
 });
 
 // Update UI when the last lines of poems are updated
@@ -123,7 +132,7 @@ function toggleInput(disabled) {
 
 // Display the final poems when the game is finished
 socket.on('displayAll', (finalPoems) => {
-    const finalPoemsHTML = finalPoems.map(poem => poem.join('<br>')).join('<br><br>');
+    const finalPoemsHTML = finalPoems.map(poem => poem.join('<br>')).join('<br>----------------------------------------<br>');
     document.getElementById('poem-container').innerHTML = finalPoemsHTML;
     disableInput()
 });
