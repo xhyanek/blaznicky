@@ -6,6 +6,10 @@ let playerIndex = null;
 let roundCount = null;
 let linesSubmitted = 0;
 
+document.getElementById('swap-themes-button').addEventListener('click', () => {
+    document.body.classList.toggle('dark')
+})
+
 // Create a new game and join it
 document.getElementById('create-game-button').addEventListener('click', () => {
     let numberOfRounds = parseInt(prompt("number of rounds"), 10);

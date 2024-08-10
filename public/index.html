@@ -6,11 +6,12 @@
     <title>🤡</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark">
     <h1>Blázničky</h1>
     <div id="create-game-container">
         <button id="create-game-button">Create Game</button>
         <button id="join-game-button">Join Game</button>
+        <button id="swap-themes-button">Swap Themes</button>
     </div>
     <div id="game-container" style="display: none">
         <div id="game-info-container">
@@ -24,7 +25,7 @@
             <button id="submit-button">Submit</button>
         </div>
         <div id="waiting-screen">
-            <label>Čeká se na <a href="https://youtu.be/RYdGB9nO2fE?si=oG2U-mKWEQLr_Wsl" target="_blank" style="text-decoration:none;color:#000000">člověka</a>, který tuhle sešnu vytvořil, aby zmáčkl čudlík<br><br></label>
+            <label>Čeká se na <a href="https://youtu.be/RYdGB9nO2fE?si=oG2U-mKWEQLr_Wsl" target="_blank" style="text-decoration:none;color:var(--text-color)">člověka</a>, který tuhle sešnu vytvořil, aby zmáčkl čudlík<br><br></label>
             <img id="waiting-image" src="images/twin-peaks-room.gif">
             <button id="start-game-button" style="display: none">Start game</button>
         </div>
